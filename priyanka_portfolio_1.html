@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Priyanka Gottapu — Snowflake Developer & Python Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --indigo:#3d2fa0;--indigo-light:#6c5ce7;--indigo-glow:rgba(108,92,231,0.35);
+  --pink:#ff2d78;--pink-glow:rgba(255,45,120,0.35);
+  --cyan:#00e5ff;--cyan-glow:rgba(0,229,255,0.3);
+  --amber:#ffb300;--amber-glow:rgba(255,179,0,0.35);
+  --bg:#080812;--bg2:#0d0d20;--bg3:#111128;
+  --text:#e8e8f0;--text2:#9999bb;--text3:#5555aa;
+  --border:rgba(108,92,231,0.2);
+}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+  cursor:none;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:9998;opacity:0.5;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--indigo-light);border-radius:2px}
+
+/* Cursor */
+#cursor-dot{position:fixed;width:8px;height:8px;border-radius:50%;background:var(--cyan);pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:width .15s,height .15s,background .15s;box-shadow:0 0 10px var(--cyan),0 0 20px var(--cyan-glow)}
+#cursor-ring{position:fixed;width:36px;height:36px;border-radius:50%;border:1.5px solid var(--indigo-light);pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:transform .12s ease-out,width .2s,height .2s,border-color .2s;box-shadow:0 0 10px var(--indigo-glow)}
+body:hover #cursor-ring{opacity:1}
+
+/* Loader */
+#loader{position:fixed;inset:0;background:var(--bg);z-index:99997;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .8s ease,visibility .8s ease}
+#loader.hidden{opacity:0;visibility:hidden}
+.loader-initials{font-family:'Syne',sans-serif;font-size:80px;font-weight:800;background:linear-gradient(135deg,var(--indigo-light),var(--pink),var(--cyan),var(--amber));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 2s linear infinite;background-size:300%}
+.loader-bar-wrap{width:200px;height:3px;background:rgba(255,255,255,0.08);border-radius:2px;margin-top:32px;overflow:hidden}
+.loader-bar{height:100%;border-radius:2px;animation:loadprogress 2s ease forwards;background:linear-gradient(90deg,var(--indigo-light),var(--pink),var(--cyan))}
+@keyframes loadprogress{0%{width:0}100%{width:100%}}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:20px 60px;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(8,8,18,0.7);border-bottom:1px solid var(--border);transform:translateY(-100%);transition:transform .6s cubic-bezier(.22,1,.36,1);animation:navslide .6s .5s forwards}
+@keyframes navslide{to{transform:translateY(0)}}
+.nav-logo{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;background:linear-gradient(135deg,var(--cyan),var(--indigo-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-decoration:none}
+.nav-links{display:flex;gap:36px;list-style:none}
+.nav-links a{color:var(--text2);text-decoration:none;font-size:14px;font-weight:500;position:relative;transition:color .3s;letter-spacing:.03em}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1.5px;background:linear-gradient(90deg,var(--pink),var(--cyan));transition:width .3s}
+.nav-links a:hover{color:var(--text)}
+.nav-links a:hover::after{width:100%}
+.nav-toggle{display:none;flex-direction:column;gap:5px;cursor:none;padding:4px}
+.nav-toggle span{width:24px;height:2px;background:var(--text);border-radius:2px;transition:.3s}
+
+/* Canvas */
+#particle-canvas{position:fixed;inset:0;z-index:0}
+
+/* Sections */
+section{position:relative;z-index:1}
+.container{max-width:1200px;margin:0 auto;padding:0 60px}
+
+/* Hero */
+#hero{min-height:100vh;display:flex;align-items:center;padding:120px 0 80px}
+.hero-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.avail-tag{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:20px;border:1px solid rgba(0,229,255,0.3);background:rgba(0,229,255,0.06);font-size:13px;color:var(--cyan);margin-bottom:24px}
+.avail-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:pulse-dot 1.8s infinite}
+@keyframes pulse-dot{0%,100%{box-shadow:0 0 0 0 rgba(0,229,255,0.5)}50%{box-shadow:0 0 0 5px rgba(0,229,255,0)}}
+h1.hero-name{font-family:'Syne',sans-serif;font-size:clamp(40px,5vw,72px);font-weight:800;line-height:1.05;margin-bottom:16px;background:linear-gradient(135deg,#fff 20%,var(--indigo-light) 45%,var(--pink) 65%,var(--cyan) 85%,var(--amber));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:300%;animation:shimmer 4s linear infinite}
+@keyframes shimmer{0%{background-position:0%}100%{background-position:300%}}
+.hero-subtitle{font-size:clamp(18px,2vw,24px);color:var(--text2);margin-bottom:12px;font-weight:400}
+.hero-tagline{font-size:15px;color:var(--text3);margin-bottom:36px;max-width:480px;line-height:1.7}
+.cta-group{display:flex;gap:16px;flex-wrap:wrap}
+.btn{padding:13px 28px;border-radius:10px;font-size:15px;font-weight:500;cursor:none;text-decoration:none;display:inline-block;transition:transform .2s,box-shadow .2s;letter-spacing:.02em}
+.btn-primary{background:linear-gradient(135deg,var(--indigo-light),var(--pink));color:#fff;box-shadow:0 4px 24px var(--indigo-glow)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px var(--pink-glow)}
+.btn-outline{border:1.5px solid var(--border);color:var(--text);background:transparent}
+.btn-outline:hover{border-color:var(--cyan);color:var(--cyan);transform:translateY(-2px);box-shadow:0 4px 16px var(--cyan-glow)}
+
+/* 3D Card */
+.hero-card-wrap{perspective:1200px;display:flex;align-items:center;justify-content:center}
+.hero-card-scene{position:relative;display:flex;align-items:center;justify-content:center;width:320px;height:380px}
+.orb{position:absolute;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle at 40% 40%,var(--indigo-light),var(--pink),transparent 70%);filter:blur(60px);opacity:0.35;animation:orb-pulse 4s ease-in-out infinite alternate}
+@keyframes orb-pulse{0%{transform:scale(0.9);opacity:0.25}100%{transform:scale(1.1);opacity:0.45}}
+.spin-ring{position:absolute;width:290px;height:290px;border-radius:50%;border:2px dashed rgba(108,92,231,0.4);animation:spin-ring 12s linear infinite}
+.spin-ring2{position:absolute;width:260px;height:260px;border-radius:50%;border:1.5px dashed rgba(0,229,255,0.2);animation:spin-ring 18s linear infinite reverse}
+@keyframes spin-ring{to{transform:rotate(360deg)}}
+.hero-card{background:linear-gradient(145deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02));backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.1);border-radius:24px;padding:36px 32px;text-align:center;width:240px;animation:float-card 6s ease-in-out infinite;box-shadow:0 24px 60px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.1)}
+@keyframes float-card{0%,100%{transform:translateY(0) rotateX(4deg) rotateY(-4deg)}33%{transform:translateY(-12px) rotateX(-2deg) rotateY(4deg)}66%{transform:translateY(-6px) rotateX(3deg) rotateY(-2deg)}}
+.card-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--indigo-light),var(--pink));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:#fff;margin:0 auto 16px;box-shadow:0 8px 24px var(--pink-glow)}
+.card-role{font-size:12px;color:var(--text2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:24px}
+.card-stats{display:flex;flex-direction:column;gap:12px}
+.stat-item{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-radius:8px;background:rgba(255,255,255,0.04);border:1px solid var(--border)}
+.stat-label{font-size:12px;color:var(--text3)}
+.stat-value{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;background:linear-gradient(90deg,var(--cyan),var(--indigo-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* Section heading */
+.sec-header{text-align:center;margin-bottom:60px}
+.sec-label{font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--indigo-light);margin-bottom:12px;display:block}
+.sec-title{font-family:'Syne',sans-serif;font-size:clamp(28px,3vw,44px);font-weight:800;margin-bottom:16px}
+.sec-line{width:60px;height:3px;background:linear-gradient(90deg,var(--pink),var(--cyan));border-radius:2px;margin:0 auto}
+
+/* Skills */
+#skills{padding:100px 0}
+.skills-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px 80px}
+.skill-item{margin-bottom:8px}
+.skill-header{display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px;font-weight:500}
+.skill-pct{color:var(--text3);font-size:13px}
+.skill-track{height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden}
+.skill-bar{height:100%;border-radius:3px;width:0;transition:width 1.4s cubic-bezier(.22,1,.36,1);position:relative;overflow:hidden}
+.skill-bar::after{content:'';position:absolute;top:0;left:-60%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);animation:none}
+.skill-bar.shimmer::after{animation:barshimmer 1s ease .2s}
+@keyframes barshimmer{0%{left:-60%}100%{left:120%}}
+.s1{background:linear-gradient(90deg,var(--indigo-light),var(--cyan))}
+.s2{background:linear-gradient(90deg,var(--pink),var(--amber))}
+.s3{background:linear-gradient(90deg,var(--cyan),var(--indigo-light))}
+.s4{background:linear-gradient(90deg,var(--amber),var(--pink))}
+.chip-cloud{display:flex;flex-wrap:wrap;gap:10px;margin-top:60px}
+.chip{padding:7px 16px;border-radius:20px;background:rgba(108,92,231,0.1);border:1px solid rgba(108,92,231,0.2);font-size:13px;color:var(--text2);transition:transform .2s,background .2s,color .2s,box-shadow .2s;cursor:default}
+.chip:hover{transform:translateY(-4px);background:rgba(108,92,231,0.2);color:var(--cyan);box-shadow:0 6px 20px var(--indigo-glow)}
+
+/* Experience */
+#experience{padding:100px 0}
+.timeline{position:relative;padding-left:36px}
+.timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--indigo-light),var(--pink),var(--cyan),var(--amber));border-radius:2px}
+.job-card{position:relative;margin-bottom:48px;padding:32px 36px;background:linear-gradient(145deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01));border:1px solid var(--border);border-radius:18px;transition:transform .3s,box-shadow .3s,border-color .3s}
+.job-card:hover{transform:translateX(8px);box-shadow:0 12px 40px rgba(108,92,231,0.15);border-color:rgba(108,92,231,0.4)}
+.job-card::before{content:'';position:absolute;left:-41px;top:36px;width:10px;height:10px;border-radius:50%;background:var(--indigo-light);border:2px solid var(--bg);box-shadow:0 0 10px var(--indigo-glow)}
+.job-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.job-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:700}
+.job-badge{padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500;background:linear-gradient(90deg,var(--indigo-light),var(--pink));color:#fff}
+.job-meta{font-size:14px;color:var(--text3);margin-bottom:16px;display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.job-meta-dot{color:var(--border);font-size:10px}
+.job-company{color:var(--cyan);font-weight:500}
+.job-desc{font-size:14px;color:var(--text2);line-height:1.8}
+.job-desc li{margin-bottom:6px;padding-left:16px;position:relative}
+.job-desc li::before{content:'›';position:absolute;left:0;color:var(--pink)}
+.badge-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.badge-chip{padding:4px 12px;border-radius:12px;font-size:12px;background:rgba(0,229,255,0.07);border:1px solid rgba(0,229,255,0.2);color:var(--cyan)}
+
+/* Marquee */
+.marquee-wrap{overflow:hidden;padding:40px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin:60px 0 0}
+.marquee-track{display:flex;gap:60px;animation:marquee 18s linear infinite;width:max-content}
+.marquee-item{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text3);letter-spacing:.05em;white-space:nowrap}
+.marquee-item span{color:var(--indigo-light)}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* Projects */
+#projects{padding:100px 0}
+.projects-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+.project-card{padding:28px;border-radius:18px;background:linear-gradient(145deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01));border:1px solid var(--border);position:relative;overflow:hidden;transition:transform .3s,box-shadow .3s;cursor:default}
+.project-card::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:3px;background:linear-gradient(90deg,transparent,var(--pink),var(--cyan),transparent);transition:left .5s ease}
+.project-card:hover::before{left:100%}
+.project-card:hover{transform:translateY(-6px);box-shadow:0 16px 48px rgba(108,92,231,0.15)}
+.project-emoji{font-size:28px;margin-bottom:12px;display:block}
+.project-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:8px}
+.project-desc{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:16px}
+.project-tags{display:flex;flex-wrap:wrap;gap:6px}
+.project-tag{padding:3px 10px;border-radius:8px;font-size:11px;background:rgba(255,179,0,0.08);border:1px solid rgba(255,179,0,0.2);color:var(--amber)}
+
+/* Education */
+#education{padding:100px 0}
+.edu-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.edu-card{padding:32px;border-radius:18px;background:linear-gradient(145deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01));border:1px solid var(--border);transition:transform .3s,box-shadow .3s}
+.edu-card:hover{transform:translateY(-4px);box-shadow:0 12px 36px rgba(108,92,231,0.12)}
+.edu-degree{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:8px}
+.edu-inst{font-size:14px;color:var(--cyan);margin-bottom:6px}
+.edu-loc{font-size:13px;color:var(--text3)}
+.lang-section{margin-top:48px;text-align:center}
+.lang-row{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-top:20px}
+.lang-badge{padding:10px 28px;border-radius:30px;font-size:14px;font-weight:500;border:1.5px solid;animation:badge-float 3s ease-in-out infinite alternate}
+.lang-badge:nth-child(1){border-color:var(--indigo-light);color:var(--indigo-light);animation-delay:0s}
+.lang-badge:nth-child(2){border-color:var(--cyan);color:var(--cyan);animation-delay:.5s}
+.lang-badge:nth-child(3){border-color:var(--pink);color:var(--pink);animation-delay:1s}
+@keyframes badge-float{0%{transform:translateY(0)}100%{transform:translateY(-6px)}}
+
+/* Contact */
+#contact{padding:100px 0 120px}
+.contact-inner{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.contact-cards{display:flex;flex-direction:column;gap:16px}
+.contact-card{display:flex;align-items:center;gap:16px;padding:20px 24px;border-radius:14px;background:linear-gradient(145deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01));border:1px solid var(--border);transition:transform .3s,box-shadow .3s,border-color .3s}
+.contact-card:hover{transform:translateX(8px);box-shadow:0 8px 24px rgba(0,229,255,0.1);border-color:rgba(0,229,255,0.3)}
+.contact-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.ci-email{background:rgba(108,92,231,0.15);border:1px solid rgba(108,92,231,0.3)}
+.ci-phone{background:rgba(255,45,120,0.1);border:1px solid rgba(255,45,120,0.3)}
+.ci-loc{background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.2)}
+.ci-avail{background:rgba(255,179,0,0.08);border:1px solid rgba(255,179,0,0.2)}
+.contact-label{font-size:12px;color:var(--text3);margin-bottom:3px}
+.contact-value{font-size:14px;font-weight:500;color:var(--text)}
+.contact-right{display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;height:300px}
+.ripple-wrap{position:relative;width:160px;height:160px;display:flex;align-items:center;justify-content:center}
+.ripple{position:absolute;border-radius:50%;border:1.5px solid rgba(108,92,231,0.3);animation:ripple-out 3s ease-out infinite}
+.ripple:nth-child(1){width:100%;height:100%;animation-delay:0s}
+.ripple:nth-child(2){width:140%;height:140%;animation-delay:.7s}
+.ripple:nth-child(3){width:180%;height:180%;animation-delay:1.4s}
+@keyframes ripple-out{0%{transform:scale(0.8);opacity:0.8}100%{transform:scale(1.3);opacity:0}}
+.contact-avatar{width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,var(--indigo-light),var(--pink));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:#fff;z-index:2;position:relative;box-shadow:0 8px 32px var(--pink-glow)}
+
+/* Scroll reveal */
+.reveal{opacity:0;transition:opacity .7s,transform .7s}
+.reveal.from-bottom{transform:translateY(40px)}
+.reveal.from-left{transform:translateX(-40px)}
+.reveal.from-right{transform:translateX(40px)}
+.reveal.visible{opacity:1;transform:none}
+
+/* Footer */
+footer{text-align:center;padding:32px;border-top:1px solid var(--border);font-size:13px;color:var(--text3);position:relative;z-index:1}
+
+/* Mobile */
+@media(max-width:900px){
+  .container{padding:0 24px}
+  nav{padding:16px 24px}
+  .nav-links{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(8,8,18,0.97);flex-direction:column;padding:24px;border-bottom:1px solid var(--border);gap:20px}
+  .nav-links.open{display:flex}
+  .nav-toggle{display:flex}
+  .hero-inner{grid-template-columns:1fr;gap:40px;text-align:center}
+  .hero-card-scene{width:260px;height:300px}
+  .hero-card{width:200px}
+  .cta-group{justify-content:center}
+  .skills-grid{grid-template-columns:1fr}
+  .projects-grid{grid-template-columns:1fr}
+  .edu-grid{grid-template-columns:1fr}
+  .contact-inner{grid-template-columns:1fr}
+  .contact-right{display:none}
+  .job-top{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<div id="loader">
+  <div class="loader-initials">PG</div>
+  <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+</div>
+
+<canvas id="particle-canvas"></canvas>
+
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">Priyanka Gottapu</a>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="https://www.linkedin.com/in/priyanka-gottapu-572b1b324/" target="_blank" rel="noopener">LinkedIn</a></li>
+  </ul>
+  <button class="nav-toggle" id="nav-toggle" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<section id="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div>
+        <div class="avail-tag reveal from-bottom"><span class="avail-dot"></span>Available for new opportunities</div>
+        <h1 class="hero-name reveal from-bottom">Priyanka<br>Gottapu</h1>
+        <p class="hero-subtitle reveal from-bottom">Snowflake Developer & Python Full Stack Engineer</p>
+        <p class="hero-tagline reveal from-bottom">Building scalable data warehouses, ETL pipelines, and web applications with 6+ years of hands-on experience across cloud and data engineering.</p>
+        <div class="cta-group reveal from-bottom">
+          <a href="#contact" class="btn btn-primary">Get In Touch</a>
+          <a href="https://www.linkedin.com/in/priyanka-gottapu-572b1b324/" target="_blank" rel="noopener" class="btn btn-outline">LinkedIn ↗</a>
+          <button class="btn btn-outline" onclick="alert('To use the Resume button, place your resume PDF in the same folder as this HTML file, rename it to resume.pdf, and the button will download it automatically.');" style="cursor:none">Resume ↓</button>
+        </div>
+      </div>
+      <div class="hero-card-wrap reveal from-right">
+        <div class="hero-card-scene">
+          <div class="orb"></div>
+          <div class="spin-ring"></div>
+          <div class="spin-ring2"></div>
+          <div class="hero-card">
+            <div class="card-avatar">PG</div>
+            <p style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:4px">Priyanka Gottapu</p>
+            <p class="card-role">Snowflake · Python · AWS</p>
+            <div class="card-stats">
+              <div class="stat-item"><span class="stat-label">Experience</span><span class="stat-value">6+ Years</span></div>
+              <div class="stat-item"><span class="stat-label">Current Role</span><span class="stat-value">Snowflake Dev</span></div>
+              <div class="stat-item"><span class="stat-label">Location</span><span class="stat-value">Saugus, MA</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="container">
+    <div class="sec-header reveal from-bottom">
+      <span class="sec-label">Expertise</span>
+      <h2 class="sec-title">Technical Skills</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="skills-grid">
+      <div class="reveal from-left">
+        <div class="skill-item"><div class="skill-header"><span>Snowflake</span><span class="skill-pct">95%</span></div><div class="skill-track"><div class="skill-bar s1" data-w="95"></div></div></div>
+        <div class="skill-item" style="margin-top:20px"><div class="skill-header"><span>SQL / SnowSQL</span><span class="skill-pct">92%</span></div><div class="skill-track"><div class="skill-bar s1" data-w="92"></div></div></div>
+        <div class="skill-item" style="margin-top:20px"><div class="skill-header"><span>Python</span><span class="skill-pct">90%</span></div><div class="skill-track"><div class="skill-bar s2" data-w="90"></div></div></div>
+        <div class="skill-item" style="margin-top:20px"><div class="skill-header"><span>ETL/ELT Pipelines</span><span class="skill-pct">92%</span></div><div class="skill-track"><div class="skill-bar s3" data-w="92"></div></div></div>
+        <div class="skill-item" style="margin-top:20px"><div class="skill-header"><span>AWS (S3, EC2, Lambda, RDS)</span><span class="skill-pct">85%</span></div><div class="skill-track"><div class="skill-bar s4" data-w="85"></div></div></div>
+        <div class="skill-item" style="margin-top:20px"><div class="skill-header"><span>Apache Kafka</span><span class="skill-pct">80%</span></div><div class="skill-track"><div class="skill-bar s1" data-w="80"></div></div></div>
+      </div>
+      <div class="reveal from-right">
+        <div class="skill-item"><div class="skill-header"><span>Django / DRF / FastAPI</span><span class="skill-pct">88%</span></div><div class="skill-track"><div class="skill-bar s2" data-w="88"></div></div></div>
+        <div class="skill-item" style="margin-top:20px"><div class="skill-header"><span>PostgreSQL / MySQL / MSSQL</span><span class="skill-pct">87%</span></div><div class="skill-track"><div class="skill-bar s3" data-w="87"></div></div></div>
+        <div class="skill-item" style="margin-top:20px"><div class="skill-header"><span>Docker / Microservices</span><span class="skill-pct">82%</span></div><div class="skill-track"><div class="skill-bar s4" data-w="82"></div></div></div>
+        <div class="skill-item" style="margin-top:20px"><div class="skill-header"><span>Tableau / Power BI</span><span class="skill-pct">78%</span></div><div class="skill-track"><div class="skill-bar s1" data-w="78"></div></div></div>
+        <div class="skill-item" style="margin-top:20px"><div class="skill-header"><span>JavaScript / Vue.js / HTML/CSS</span><span class="skill-pct">80%</span></div><div class="skill-track"><div class="skill-bar s2" data-w="80"></div></div></div>
+        <div class="skill-item" style="margin-top:20px"><div class="skill-header"><span>Data Modeling & RBAC</span><span class="skill-pct">88%</span></div><div class="skill-track"><div class="skill-bar s3" data-w="88"></div></div></div>
+      </div>
+    </div>
+    <div class="chip-cloud reveal from-bottom">
+      <span class="chip">Snowflake</span><span class="chip">Snowpipe</span><span class="chip">Streams & Tasks</span><span class="chip">Time Travel</span><span class="chip">Zero-Copy Cloning</span><span class="chip">UDFs</span><span class="chip">CDC</span><span class="chip">Python</span><span class="chip">Django</span><span class="chip">FastAPI</span><span class="chip">DRF</span><span class="chip">PostgreSQL</span><span class="chip">MySQL</span><span class="chip">MongoDB</span><span class="chip">Teradata</span><span class="chip">AWS S3</span><span class="chip">AWS EC2</span><span class="chip">AWS Lambda</span><span class="chip">AWS RDS</span><span class="chip">Apache Kafka</span><span class="chip">Docker</span><span class="chip">Tableau</span><span class="chip">Power BI</span><span class="chip">Airflow</span><span class="chip">Automic / UC4</span><span class="chip">Vue.js</span><span class="chip">JavaScript</span><span class="chip">HTML & CSS</span><span class="chip">jQuery</span><span class="chip">Bash</span><span class="chip">RBAC</span><span class="chip">SnowSQL</span><span class="chip">Azure</span><span class="chip">GCP</span><span class="chip">Git</span><span class="chip">Agile/Scrum</span>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="container">
+    <div class="sec-header reveal from-bottom">
+      <span class="sec-label">Career</span>
+      <h2 class="sec-title">Work Experience</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="timeline">
+
+      <div class="job-card reveal from-left">
+        <div class="job-top">
+          <div class="job-title">Snowflake Developer</div>
+          <div class="job-badge">Current</div>
+        </div>
+        <div class="job-meta">
+          <span class="job-company">CVS Health</span><span class="job-meta-dot">●</span>
+          <span>New York, USA</span><span class="job-meta-dot">●</span>
+          <span>June 2024 – Present</span>
+        </div>
+        <ul class="job-desc">
+          <li>Migrated large-scale data from Oracle, MySQL, SQL Server, and Teradata to Snowflake, ensuring seamless transition and consistency.</li>
+          <li>Developed Python-based workflows on AWS EC2 to extract data from external sources and load into Amazon S3, enabling scalable ingestion pipelines.</li>
+          <li>Designed and implemented Snowpipe for continuous, automated data ingestion from S3 into Snowflake.</li>
+          <li>Implemented Change Data Capture (CDC) using Snowflake Streams for incremental data processing.</li>
+          <li>Configured virtual warehouses with resizing strategies to support varying workload demands.</li>
+          <li>Built reusable UDFs for custom data transformation logic and leveraged Time Travel & Zero-Copy Cloning for recovery and testing.</li>
+          <li>Implemented RBAC by defining roles and privileges to ensure secure data access across the enterprise.</li>
+          <li>Enabled secure data sharing between Snowflake accounts for cross-team and cross-org collaboration.</li>
+          <li>Automated data workflows using Automic One Automation scheduler; developed data retention with automated purging via stored procedures.</li>
+        </ul>
+        <div class="badge-chips">
+          <span class="badge-chip">Snowflake</span><span class="badge-chip">Snowpipe</span><span class="badge-chip">CDC</span><span class="badge-chip">AWS S3/EC2</span><span class="badge-chip">Python</span><span class="badge-chip">RBAC</span><span class="badge-chip">Automic</span><span class="badge-chip">Oracle Migration</span>
+        </div>
+      </div>
+
+      <div class="job-card reveal from-left">
+        <div class="job-top">
+          <div class="job-title">ETL Developer</div>
+          <div class="job-badge" style="background:linear-gradient(90deg,var(--cyan),var(--indigo-light))">Cognizant</div>
+        </div>
+        <div class="job-meta">
+          <span class="job-company">Cognizant</span><span class="job-meta-dot">●</span>
+          <span>Hyderabad, India</span><span class="job-meta-dot">●</span>
+          <span>May 2020 – June 2022</span>
+        </div>
+        <ul class="job-desc">
+          <li>Led migration of 700+ objects (~6TB data) from Teradata to Snowflake, ensuring high data accuracy and consistency.</li>
+          <li>Implemented Snowpipe and near real-time data pipelines (Kafka → S3 → Snowflake) for continuous automated ingestion.</li>
+          <li>Built and optimized ETL pipelines using SnowSQL and Python, converting legacy on-prem processes into scalable Snowflake workflows.</li>
+          <li>Developed stored procedures (SQL & JavaScript) and UDFs for complex transformations, incremental loading, and reusable business logic.</li>
+          <li>Processed semi-structured JSON data from Kafka using LATERAL FLATTEN and table functions.</li>
+          <li>Created external tables to query data directly from S3 without full ingestion into Snowflake.</li>
+          <li>Optimized views and materialized views, significantly improving performance for reporting and analytics; integrated with Power BI and Tableau.</li>
+        </ul>
+        <div class="badge-chips">
+          <span class="badge-chip">Teradata→Snowflake</span><span class="badge-chip">Kafka</span><span class="badge-chip">SnowSQL</span><span class="badge-chip">Stored Procedures</span><span class="badge-chip">Power BI</span><span class="badge-chip">Tableau</span><span class="badge-chip">Parquet/JSON/CSV</span>
+        </div>
+      </div>
+
+      <div class="job-card reveal from-left">
+        <div class="job-top">
+          <div class="job-title">Python Engineer</div>
+          <div class="job-badge" style="background:linear-gradient(90deg,var(--amber),var(--pink))">ISSI</div>
+        </div>
+        <div class="job-meta">
+          <span class="job-company">Invincible Software Solutions Integrated Pvt. Ltd</span><span class="job-meta-dot">●</span>
+          <span>Hyderabad, India</span><span class="job-meta-dot">●</span>
+          <span>August 2018 – April 2020</span>
+        </div>
+        <ul class="job-desc">
+          <li>Developed scalable backend systems and RESTful APIs using Django, FastAPI, and Docker with clean architecture principles.</li>
+          <li>Built responsive front-end interfaces using Vue.js, HTML, CSS, and JavaScript with efficient MongoDB/PostgreSQL schemas.</li>
+          <li>Designed and implemented RESTful APIs using Django REST Framework (DRF) for seamless frontend-backend communication.</li>
+          <li>Developed microservices using FastAPI integrated with existing Django applications for improved scalability.</li>
+          <li>Containerized applications using Docker and deployed services on AWS (EC2, S3, RDS, Lambda).</li>
+          <li>Built and integrated data pipelines using Python and Snowflake, including data ingestion from S3 and SQL transformations.</li>
+          <li>Implemented authentication, authorization, and RBAC for secure application access.</li>
+        </ul>
+        <div class="badge-chips">
+          <span class="badge-chip">Django</span><span class="badge-chip">FastAPI</span><span class="badge-chip">Vue.js</span><span class="badge-chip">Docker</span><span class="badge-chip">PostgreSQL</span><span class="badge-chip">MongoDB</span><span class="badge-chip">AWS</span><span class="badge-chip">RESTful APIs</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="marquee-wrap">
+      <div class="marquee-track" id="marquee">
+        <span class="marquee-item"><span>●</span> CVS Health</span>
+        <span class="marquee-item"><span>●</span> Cognizant</span>
+        <span class="marquee-item"><span>●</span> ISSI</span>
+        <span class="marquee-item"><span>●</span> Snowflake</span>
+        <span class="marquee-item"><span>●</span> AWS</span>
+        <span class="marquee-item"><span>●</span> Apache Kafka</span>
+        <span class="marquee-item"><span>●</span> Teradata</span>
+        <span class="marquee-item"><span>●</span> Oracle</span>
+        <span class="marquee-item"><span>●</span> Tableau</span>
+        <span class="marquee-item"><span>●</span> Power BI</span>
+        <span class="marquee-item"><span>●</span> CVS Health</span>
+        <span class="marquee-item"><span>●</span> Cognizant</span>
+        <span class="marquee-item"><span>●</span> ISSI</span>
+        <span class="marquee-item"><span>●</span> Snowflake</span>
+        <span class="marquee-item"><span>●</span> AWS</span>
+        <span class="marquee-item"><span>●</span> Apache Kafka</span>
+        <span class="marquee-item"><span>●</span> Teradata</span>
+        <span class="marquee-item"><span>●</span> Oracle</span>
+        <span class="marquee-item"><span>●</span> Tableau</span>
+        <span class="marquee-item"><span>●</span> Power BI</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="container">
+    <div class="sec-header reveal from-bottom">
+      <span class="sec-label">Work</span>
+      <h2 class="sec-title">Key Projects</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="projects-grid">
+
+      <div class="project-card reveal from-bottom">
+        <span class="project-emoji">❄️</span>
+        <p class="project-name">Enterprise Data Migration Platform</p>
+        <p class="project-desc">Led end-to-end migration of Oracle, MySQL, SQL Server, and Teradata sources to Snowflake at CVS Health. Included rigorous validation, source-to-target mapping, and automated reconciliation pipelines ensuring zero data loss at scale.</p>
+        <div class="project-tags"><span class="project-tag">Snowflake</span><span class="project-tag">Python</span><span class="project-tag">Oracle</span><span class="project-tag">AWS S3</span></div>
+      </div>
+
+      <div class="project-card reveal from-bottom">
+        <span class="project-emoji">🔄</span>
+        <p class="project-name">Real-Time Kafka→Snowflake Pipeline</p>
+        <p class="project-desc">Designed and implemented near real-time data pipelines with a 30-minute cadence using Kafka → S3 → Snowflake architecture at Cognizant. Processed semi-structured JSON via LATERAL FLATTEN for analytics workloads.</p>
+        <div class="project-tags"><span class="project-tag">Kafka</span><span class="project-tag">Snowflake</span><span class="project-tag">S3</span><span class="project-tag">SnowSQL</span></div>
+      </div>
+
+      <div class="project-card reveal from-bottom">
+        <span class="project-emoji">🏗️</span>
+        <p class="project-name">Teradata to Snowflake Migration (6TB)</p>
+        <p class="project-desc">Migrated 700+ objects and ~6TB of data from legacy Teradata to Snowflake. Rebuilt ETL logic using SnowSQL and Python, converting on-prem batch jobs into scalable cloud-native workflows with stored procedures and UDFs.</p>
+        <div class="project-tags"><span class="project-tag">Teradata</span><span class="project-tag">Snowflake</span><span class="project-tag">ETL</span><span class="project-tag">UDFs</span></div>
+      </div>
+
+      <div class="project-card reveal from-bottom">
+        <span class="project-emoji">🌐</span>
+        <p class="project-name">Scalable RESTful API Platform</p>
+        <p class="project-desc">Architected and built scalable backend APIs using Django REST Framework and FastAPI at ISSI. Deployed as containerized microservices on AWS (EC2, Lambda, RDS) with full RBAC, authentication, and CI/CD workflows.</p>
+        <div class="project-tags"><span class="project-tag">Django</span><span class="project-tag">FastAPI</span><span class="project-tag">Docker</span><span class="project-tag">AWS</span></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="education">
+  <div class="container">
+    <div class="sec-header reveal from-bottom">
+      <span class="sec-label">Learning</span>
+      <h2 class="sec-title">Education</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="edu-grid">
+      <div class="edu-card reveal from-left">
+        <div style="font-size:32px;margin-bottom:16px">🎓</div>
+        <p class="edu-degree">Master of Science in Computer Information Systems</p>
+        <p class="edu-inst">Rivier University</p>
+        <p class="edu-loc">Nashua, New Hampshire, USA</p>
+      </div>
+      <div class="edu-card reveal from-right">
+        <div style="font-size:32px;margin-bottom:16px">🏫</div>
+        <p class="edu-degree">Bachelor of Science in Computer Science & Engineering</p>
+        <p class="edu-inst">Vignan's Institute of Engineering for Women</p>
+        <p class="edu-loc">Vishakhapatnam, India</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="container">
+    <div class="sec-header reveal from-bottom">
+      <span class="sec-label">Let's Connect</span>
+      <h2 class="sec-title">Get In Touch</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="contact-inner">
+      <div class="contact-cards reveal from-left">
+        <div class="contact-card">
+          <div class="contact-icon ci-email">📧</div>
+          <div><p class="contact-label">Email</p><p class="contact-value">gottapupriyanka0497@gmail.com</p></div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon ci-phone">📱</div>
+          <div><p class="contact-label">Phone</p><p class="contact-value">+1 (339) 231-3729</p></div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon ci-loc">📍</div>
+          <div><p class="contact-label">Location</p><p class="contact-value">Saugus, MA — Open to Relocation</p></div>
+        </div>
+        <div class="contact-card" style="cursor:pointer" onclick="window.open('https://www.linkedin.com/in/priyanka-gottapu-572b1b324/','_blank')">
+          <div class="contact-icon" style="background:rgba(0,119,181,0.12);border:1px solid rgba(0,119,181,0.3)">💼</div>
+          <div><p class="contact-label">LinkedIn</p><p class="contact-value" style="color:var(--cyan)">priyanka-gottapu-572b1b324 ↗</p></div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon ci-avail">✅</div>
+          <div><p class="contact-label">Status</p><p class="contact-value">Available for New Opportunities</p></div>
+        </div>
+      </div>
+      <div class="contact-right reveal from-right">
+        <div class="ripple-wrap">
+          <div class="ripple"></div>
+          <div class="ripple"></div>
+          <div class="ripple"></div>
+          <div class="contact-avatar">PG</div>
+        </div>
+        <p style="margin-top:28px;color:var(--text2);font-size:15px;text-align:center">Open to data engineering,<br>Snowflake, and full-stack roles</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p style="color:var(--text3)">Crafted with passion by <span style="color:var(--indigo-light);font-weight:600">Priyanka Gottapu</span> · Snowflake Developer & Python Engineer · Saugus, MA</p>
+</footer>
+
+<script>
+// Loader
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    document.getElementById('loader').classList.add('hidden');
+  },2200);
+});
+
+// Custom cursor
+const dot=document.getElementById('cursor-dot');
+const ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  dot.style.left=mx+'px';dot.style.top=my+'px';
+});
+function animRing(){
+  rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;
+  ring.style.left=rx+'px';ring.style.top=ry+'px';
+  requestAnimationFrame(animRing);
+}animRing();
+document.querySelectorAll('a,button,.chip,.project-card,.job-card,.contact-card,.btn').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{dot.style.width='12px';dot.style.height='12px';ring.style.width='52px';ring.style.height='52px';ring.style.borderColor='var(--pink)'});
+  el.addEventListener('mouseleave',()=>{dot.style.width='8px';dot.style.height='8px';ring.style.width='36px';ring.style.height='36px';ring.style.borderColor='var(--indigo-light)'});
+});
+
+// Particle canvas
+const canvas=document.getElementById('particle-canvas');
+const ctx=canvas.getContext('2d');
+let W,H,particles=[];
+const COLORS=['#6c5ce7','#ff2d78','#00e5ff','#ffb300'];
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+resize();window.addEventListener('resize',()=>{resize();initParticles();});
+function initParticles(){
+  particles=[];
+  const count=Math.floor(W*H/14000);
+  for(let i=0;i<count;i++){
+    particles.push({
+      x:Math.random()*W,y:Math.random()*H,
+      vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,
+      r:Math.random()*2+1,
+      color:COLORS[Math.floor(Math.random()*COLORS.length)]
+    });
+  }
+}initParticles();
+function drawParticles(){
+  ctx.clearRect(0,0,W,H);
+  for(let i=0;i<particles.length;i++){
+    const p=particles[i];
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0||p.x>W)p.vx*=-1;
+    if(p.y<0||p.y>H)p.vy*=-1;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=p.color;ctx.globalAlpha=0.7;ctx.fill();
+    for(let j=i+1;j<particles.length;j++){
+      const q=particles[j];
+      const dx=p.x-q.x,dy=p.y-q.y,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<130){
+        ctx.globalAlpha=(1-d/130)*0.18;
+        ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);
+        ctx.strokeStyle=p.color;ctx.lineWidth=0.8;ctx.stroke();
+      }
+    }
+    ctx.globalAlpha=1;
+  }
+  requestAnimationFrame(drawParticles);
+}drawParticles();
+
+// Scroll reveal
+const reveals=document.querySelectorAll('.reveal');
+const obs=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}
+  });
+},{threshold:0.12});
+reveals.forEach(el=>obs.observe(el));
+
+// Skill bars
+const bars=document.querySelectorAll('.skill-bar');
+const barObs=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const w=e.target.getAttribute('data-w');
+      e.target.style.width=w+'%';
+      setTimeout(()=>e.target.classList.add('shimmer'),1400);
+      barObs.unobserve(e.target);
+    }
+  });
+},{threshold:0.3});
+bars.forEach(b=>barObs.observe(b));
+
+// Nav toggle
+document.getElementById('nav-toggle').addEventListener('click',()=>{
+  document.getElementById('nav-links').classList.toggle('open');
+});
+document.querySelectorAll('.nav-links a').forEach(a=>{
+  a.addEventListener('click',()=>document.getElementById('nav-links').classList.remove('open'));
+});
+</script>
+</body>
+</html>
